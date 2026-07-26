@@ -1,6 +1,7 @@
 from datetime import datetime
 
-from sqlalchemy import text
+from sqlalchemy import MetaData, text
+from sqlalchemy.orm import DeclarativeBase
 
 from agentshield_shared.db.base import Base, make_engine, make_session_factory, new_id, utc_now
 
@@ -13,11 +14,15 @@ def test_make_engine_and_session_factory_work_against_sqlite():
         assert result == 1
 
 
-def test_base_has_empty_metadata_before_any_models_are_defined_here():
-    # This module only defines the declarative base — models live in
-    # models_business.py (Task 2). Metadata is a shared registry, so this
-    # just confirms Base itself is usable as a declarative base.
-    assert hasattr(Base, "metadata")
+def test_base_is_a_working_declarative_base():
+    assert issubclass(Base, DeclarativeBase)
+    assert isinstance(Base.metadata, MetaData)
+    # create_all against a fresh engine must not raise, regardless of how
+    # many tables other modules have registered on Base.metadata by the
+    # time this runs — this is what actually proves Base works as a
+    # declarative base, without any fragile "metadata is empty" premise.
+    engine = make_engine("sqlite:///:memory:")
+    Base.metadata.create_all(engine)
 
 
 def test_new_id_returns_unique_strings():
