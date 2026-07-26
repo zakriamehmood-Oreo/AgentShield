@@ -35,7 +35,7 @@
 - Test: `libs/shared/tests/test_package.py`
 
 **Interfaces:**
-- Produces: `agentshield_shared.__version__: str`; `agentshield_shared.db.base.Base` (SQLAlchemy `DeclarativeBase` subclass); `agentshield_shared.db.base.make_engine(database_url: str, echo: bool = False) -> sqlalchemy.Engine`; `agentshield_shared.db.base.make_session_factory(engine) -> sqlalchemy.orm.sessionmaker`.
+- Produces: `agentshield_shared.__version__: str`; `agentshield_shared.db.base.Base` (SQLAlchemy `DeclarativeBase` subclass); `agentshield_shared.db.base.make_engine(database_url: str, echo: bool = False) -> sqlalchemy.Engine`; `agentshield_shared.db.base.make_session_factory(engine) -> sqlalchemy.orm.sessionmaker`; `agentshield_shared.db.base.new_id() -> str` and `agentshield_shared.db.base.utc_now() -> datetime` — the shared primary-key/timestamp default helpers every model module (Tasks 2, 5, 6) imports from here rather than redefining locally.
 
 - [ ] **Step 1: Create the root workspace `pyproject.toml`**
 
@@ -134,6 +134,9 @@ every table in the database is registered on one metadata object, which is
 what lets services/api's single Alembic history manage the whole schema.
 """
 
+import uuid
+from datetime import datetime, timezone
+
 from sqlalchemy import Engine, create_engine
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
@@ -148,15 +151,27 @@ def make_engine(database_url: str, echo: bool = False) -> Engine:
 
 def make_session_factory(engine: Engine) -> sessionmaker[Session]:
     return sessionmaker(bind=engine, expire_on_commit=False, future=True)
+
+
+def new_id() -> str:
+    """Default for every model's string-UUID primary key."""
+    return str(uuid.uuid4())
+
+
+def utc_now() -> datetime:
+    """Default for every model's created_at/timestamp column."""
+    return datetime.now(timezone.utc)
 ```
 
 - [ ] **Step 9: Write a test for the engine/session factories**
 
 `libs/shared/tests/test_db_base.py`:
 ```python
+from datetime import datetime
+
 from sqlalchemy import text
 
-from agentshield_shared.db.base import Base, make_engine, make_session_factory
+from agentshield_shared.db.base import Base, make_engine, make_session_factory, new_id, utc_now
 
 
 def test_make_engine_and_session_factory_work_against_sqlite():
@@ -172,12 +187,23 @@ def test_base_has_empty_metadata_before_any_models_are_defined_here():
     # models_business.py (Task 2). Metadata is a shared registry, so this
     # just confirms Base itself is usable as a declarative base.
     assert hasattr(Base, "metadata")
+
+
+def test_new_id_returns_unique_strings():
+    assert new_id() != new_id()
+    assert isinstance(new_id(), str)
+
+
+def test_utc_now_returns_timezone_aware_datetime():
+    now = utc_now()
+    assert isinstance(now, datetime)
+    assert now.tzinfo is not None
 ```
 
 - [ ] **Step 10: Run the new tests to verify they pass**
 
 Run: `uv run --package agentshield-shared pytest libs/shared/tests -v`
-Expected: 3 passed (test_version_is_a_string, test_make_engine_and_session_factory_work_against_sqlite, test_base_has_empty_metadata_before_any_models_are_defined_here).
+Expected: 5 passed (test_version_is_a_string, test_make_engine_and_session_factory_work_against_sqlite, test_base_has_empty_metadata_before_any_models_are_defined_here, test_new_id_returns_unique_strings, test_utc_now_returns_timezone_aware_datetime).
 
 - [ ] **Step 11: Commit**
 
@@ -276,31 +302,22 @@ read and written by services/tool_server's MCP tools, which is why they
 live in the shared package both services depend on.
 """
 
-import uuid
-from datetime import datetime, timezone
+from datetime import datetime
 
 from sqlalchemy import DateTime, ForeignKey, JSON, Numeric, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from agentshield_shared.db.base import Base
-
-
-def _uuid() -> str:
-    return str(uuid.uuid4())
-
-
-def _now() -> datetime:
-    return datetime.now(timezone.utc)
+from agentshield_shared.db.base import Base, new_id, utc_now
 
 
 class Customer(Base):
     __tablename__ = "customers"
 
-    id: Mapped[str] = mapped_column(String, primary_key=True, default=_uuid)
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=new_id)
     customer_key: Mapped[str] = mapped_column(String, unique=True, nullable=False)
     email_hash: Mapped[str] = mapped_column(String, nullable=False)
     tier: Mapped[str] = mapped_column(String, nullable=False, default="standard")
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
 
     orders: Mapped[list["Order"]] = relationship(back_populates="customer")
 
@@ -308,7 +325,7 @@ class Customer(Base):
 class Order(Base):
     __tablename__ = "orders"
 
-    id: Mapped[str] = mapped_column(String, primary_key=True, default=_uuid)
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=new_id)
     customer_id: Mapped[str] = mapped_column(ForeignKey("customers.id"), nullable=False)
     order_number: Mapped[str] = mapped_column(String, unique=True, nullable=False)
     status: Mapped[str] = mapped_column(String, nullable=False, default="placed")
@@ -316,7 +333,7 @@ class Order(Base):
     currency: Mapped[str] = mapped_column(String, nullable=False, default="USD")
     items: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
     notes: Mapped[str] = mapped_column(Text, nullable=False, default="")
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
 
     customer: Mapped["Customer"] = relationship(back_populates="orders")
     shipments: Mapped[list["Shipment"]] = relationship(back_populates="order")
@@ -325,7 +342,7 @@ class Order(Base):
 class Shipment(Base):
     __tablename__ = "shipments"
 
-    id: Mapped[str] = mapped_column(String, primary_key=True, default=_uuid)
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=new_id)
     order_id: Mapped[str] = mapped_column(ForeignKey("orders.id"), nullable=False)
     carrier: Mapped[str] = mapped_column(String, nullable=False)
     tracking_number: Mapped[str] = mapped_column(String, nullable=False)
@@ -339,7 +356,7 @@ class Shipment(Base):
 class Policy(Base):
     __tablename__ = "policies"
 
-    id: Mapped[str] = mapped_column(String, primary_key=True, default=_uuid)
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=new_id)
     policy_key: Mapped[str] = mapped_column(String, unique=True, nullable=False)
     title: Mapped[str] = mapped_column(String, nullable=False)
     body: Mapped[str] = mapped_column(Text, nullable=False)
@@ -846,32 +863,23 @@ the agent produces. Owned exclusively by services/api — tool_server never
 reads or writes these tables.
 """
 
-import uuid
-from datetime import datetime, timezone
+from datetime import datetime
 
 from sqlalchemy import DateTime, ForeignKey, JSON, Numeric, String, Text, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from agentshield_shared.db.base import Base
-
-
-def _uuid() -> str:
-    return str(uuid.uuid4())
-
-
-def _now() -> datetime:
-    return datetime.now(timezone.utc)
+from agentshield_shared.db.base import Base, new_id, utc_now
 
 
 class Conversation(Base):
     __tablename__ = "conversations"
 
-    id: Mapped[str] = mapped_column(String, primary_key=True, default=_uuid)
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=new_id)
     customer_id: Mapped[str] = mapped_column(ForeignKey("customers.id"), nullable=False)
     agent_version_id: Mapped[str | None] = mapped_column(String, nullable=True)
     channel: Mapped[str] = mapped_column(String, nullable=False, default="chat")
     status: Mapped[str] = mapped_column(String, nullable=False, default="open")
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
 
     messages: Mapped[list["Message"]] = relationship(back_populates="conversation")
 
@@ -879,11 +887,11 @@ class Conversation(Base):
 class Message(Base):
     __tablename__ = "messages"
 
-    id: Mapped[str] = mapped_column(String, primary_key=True, default=_uuid)
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=new_id)
     conversation_id: Mapped[str] = mapped_column(ForeignKey("conversations.id"), nullable=False)
     role: Mapped[str] = mapped_column(String, nullable=False)
     content: Mapped[str] = mapped_column(Text, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
 
     conversation: Mapped["Conversation"] = relationship(back_populates="messages")
 
@@ -891,13 +899,13 @@ class Message(Base):
 class Span(Base):
     __tablename__ = "spans"
 
-    id: Mapped[str] = mapped_column(String, primary_key=True, default=_uuid)
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=new_id)
     conversation_id: Mapped[str] = mapped_column(ForeignKey("conversations.id"), nullable=False)
     span_id: Mapped[str] = mapped_column(String, nullable=False)
     parent_span_id: Mapped[str | None] = mapped_column(String, nullable=True)
     name: Mapped[str] = mapped_column(String, nullable=False)
     kind: Mapped[str] = mapped_column(String, nullable=False)  # llm_call | tool_call | retrieval | eval
-    start_time: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+    start_time: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
     end_time: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     attributes: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
     status: Mapped[str] = mapped_column(String, nullable=False, default="ok")
@@ -906,7 +914,7 @@ class Span(Base):
 class ToolCall(Base):
     __tablename__ = "tool_calls"
 
-    id: Mapped[str] = mapped_column(String, primary_key=True, default=_uuid)
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=new_id)
     conversation_id: Mapped[str] = mapped_column(ForeignKey("conversations.id"), nullable=False)
     span_id: Mapped[str] = mapped_column(ForeignKey("spans.id"), nullable=False)
     tool_name: Mapped[str] = mapped_column(String, nullable=False)
@@ -918,13 +926,13 @@ class ToolCall(Base):
     reasoning: Mapped[str] = mapped_column(Text, nullable=False, default="")
     monetary_impact: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False, default=0)
     contains_untrusted_content: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
 
 
 class Citation(Base):
     __tablename__ = "citations"
 
-    id: Mapped[str] = mapped_column(String, primary_key=True, default=_uuid)
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=new_id)
     message_id: Mapped[str] = mapped_column(ForeignKey("messages.id"), nullable=False)
     policy_id: Mapped[str | None] = mapped_column(ForeignKey("policies.id"), nullable=True)
     passage: Mapped[str] = mapped_column(Text, nullable=False)
@@ -1107,21 +1115,12 @@ fact breaks the chain for every row after it.
 
 import hashlib
 import json
-import uuid
-from datetime import datetime, timezone
+from datetime import datetime
 
 from sqlalchemy import DateTime, ForeignKey, JSON, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
-from agentshield_shared.db.base import Base
-
-
-def _uuid() -> str:
-    return str(uuid.uuid4())
-
-
-def _now() -> datetime:
-    return datetime.now(timezone.utc)
+from agentshield_shared.db.base import Base, new_id, utc_now
 
 
 def compute_next_hash(prev_hash: str | None, payload: dict) -> str:
@@ -1133,25 +1132,25 @@ def compute_next_hash(prev_hash: str | None, payload: dict) -> str:
 class ApprovalRequest(Base):
     __tablename__ = "approval_requests"
 
-    id: Mapped[str] = mapped_column(String, primary_key=True, default=_uuid)
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=new_id)
     tool_call_id: Mapped[str] = mapped_column(ForeignKey("tool_calls.id"), nullable=False)
     status: Mapped[str] = mapped_column(String, nullable=False, default="pending")  # pending | approved | rejected
     reviewer: Mapped[str | None] = mapped_column(String, nullable=True)
     decision_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
     decided_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
 class AuditLog(Base):
     __tablename__ = "audit_log"
 
-    id: Mapped[str] = mapped_column(String, primary_key=True, default=_uuid)
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=new_id)
     entity_type: Mapped[str] = mapped_column(String, nullable=False)
     entity_id: Mapped[str] = mapped_column(String, nullable=False)
     actor: Mapped[str] = mapped_column(String, nullable=False)
     action: Mapped[str] = mapped_column(String, nullable=False)
     payload: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
     prev_hash: Mapped[str | None] = mapped_column(String, nullable=True)
     hash: Mapped[str] = mapped_column(String, nullable=False)
 ```
@@ -1167,37 +1166,28 @@ files are the source of truth; this table exists so eval_results can join
 against scenario metadata (category, forbidden_actions, etc.) in SQL.
 """
 
-import uuid
-from datetime import datetime, timezone
+from datetime import datetime
 
 from sqlalchemy import Boolean, DateTime, ForeignKey, JSON, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
-from agentshield_shared.db.base import Base
-
-
-def _uuid() -> str:
-    return str(uuid.uuid4())
-
-
-def _now() -> datetime:
-    return datetime.now(timezone.utc)
+from agentshield_shared.db.base import Base, new_id, utc_now
 
 
 class AgentVersion(Base):
     __tablename__ = "agent_versions"
 
-    id: Mapped[str] = mapped_column(String, primary_key=True, default=_uuid)
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=new_id)
     name: Mapped[str] = mapped_column(String, unique=True, nullable=False)
     system_prompt: Mapped[str] = mapped_column(Text, nullable=False)
     model_name: Mapped[str] = mapped_column(String, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
 
 
 class Scenario(Base):
     __tablename__ = "scenarios"
 
-    id: Mapped[str] = mapped_column(String, primary_key=True, default=_uuid)
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=new_id)
     external_key: Mapped[str] = mapped_column(String, unique=True, nullable=False)
     category: Mapped[str] = mapped_column(String, nullable=False)
     user_identity: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
@@ -1214,10 +1204,10 @@ class Scenario(Base):
 class EvalRun(Base):
     __tablename__ = "eval_runs"
 
-    id: Mapped[str] = mapped_column(String, primary_key=True, default=_uuid)
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=new_id)
     dataset_version: Mapped[str] = mapped_column(String, nullable=False)
     agent_version_id: Mapped[str] = mapped_column(ForeignKey("agent_versions.id"), nullable=False)
-    started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+    started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
     finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     config: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
 
@@ -1225,7 +1215,7 @@ class EvalRun(Base):
 class EvalResult(Base):
     __tablename__ = "eval_results"
 
-    id: Mapped[str] = mapped_column(String, primary_key=True, default=_uuid)
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=new_id)
     eval_run_id: Mapped[str] = mapped_column(ForeignKey("eval_runs.id"), nullable=False)
     scenario_id: Mapped[str] = mapped_column(ForeignKey("scenarios.id"), nullable=False)
     metric_name: Mapped[str] = mapped_column(String, nullable=False)
@@ -1237,7 +1227,7 @@ class EvalResult(Base):
 class RegressionComparison(Base):
     __tablename__ = "regression_comparisons"
 
-    id: Mapped[str] = mapped_column(String, primary_key=True, default=_uuid)
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=new_id)
     run_a_id: Mapped[str] = mapped_column(ForeignKey("eval_runs.id"), nullable=False)
     run_b_id: Mapped[str] = mapped_column(ForeignKey("eval_runs.id"), nullable=False)
     metric_name: Mapped[str] = mapped_column(String, nullable=False)
