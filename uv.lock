@@ -12,6 +12,7 @@ resolution-markers = [
 members = [
     "agentshield-api",
     "agentshield-shared",
+    "agentshield-tool-server",
     "agentshield-workspace",
 ]
 
@@ -80,6 +81,35 @@ dev = [
 requires-dist = [
     { name = "pydantic", specifier = ">=2.9" },
     { name = "sqlalchemy", specifier = ">=2.0.35" },
+]
+
+[package.metadata.requires-dev]
+dev = [{ name = "pytest", specifier = ">=8.3" }]
+
+[[package]]
+name = "agentshield-tool-server"
+version = "0.1.0"
+source = { editable = "services/tool_server" }
+dependencies = [
+    { name = "agentshield-shared" },
+    { name = "mcp" },
+    { name = "psycopg", extra = ["binary"] },
+    { name = "sqlalchemy" },
+    { name = "uvicorn", extra = ["standard"] },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "pytest" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "agentshield-shared", editable = "libs/shared" },
+    { name = "mcp", specifier = ">=1.28.0" },
+    { name = "psycopg", extras = ["binary"], specifier = ">=3.2" },
+    { name = "sqlalchemy", specifier = ">=2.0.35" },
+    { name = "uvicorn", extras = ["standard"], specifier = ">=0.32" },
 ]
 
 [package.metadata.requires-dev]

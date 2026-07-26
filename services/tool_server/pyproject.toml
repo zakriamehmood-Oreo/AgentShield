@@ -1,0 +1,28 @@
+[project]
+name = "agentshield-tool-server"
+version = "0.1.0"
+description = "Mock MCP-compatible business systems for AgentShield (7 tools)"
+requires-python = ">=3.12"
+dependencies = [
+    "agentshield-shared",
+    "mcp>=1.28.0",
+    "sqlalchemy>=2.0.35",
+    "psycopg[binary]>=3.2",
+    "uvicorn[standard]>=0.32",
+]
+
+[dependency-groups]
+dev = ["pytest>=8.3"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["agentshield_tools"]
+
+[tool.uv.sources]
+agentshield-shared = { workspace = true }
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
