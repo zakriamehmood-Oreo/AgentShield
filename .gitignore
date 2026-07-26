@@ -41,3 +41,6 @@ postgres-data/
 # Logs and local scratch
 *.log
 .cache/
+
+# Subagent-driven-development scratch workspace (ledgers, briefs, reports)
+.superpowers/
