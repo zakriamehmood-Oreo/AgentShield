@@ -6,7 +6,7 @@
 
 **Architecture:** A uv workspace with three Python packages (`libs/shared`, `services/api`, `services/tool_server`) sharing one Postgres database. `libs/shared` owns SQLAlchemy model definitions and tool I/O pydantic schemas so both backend services and the seed script use identical types. `services/api` owns the single Alembic migration history for the whole database (business + execution/trace tables). `services/tool_server` is a separate MCP server process, reachable only on the internal Docker network.
 
-**Tech Stack:** Python 3.12, uv (workspace + dependency management), SQLAlchemy 2.0 (typed `Mapped`/`mapped_column`), Alembic, FastAPI, the `mcp` SDK (`MCPServer` class — NOT `FastMCP`, which was renamed upstream after this plan's author's training cutoff; verified live against the SDK's example snippets on 2026-07-26), Pinecone Python SDK (package name `pinecone`, `from pinecone import Pinecone`), pytest, Docker Compose.
+**Tech Stack:** Python 3.12, uv (workspace + dependency management), SQLAlchemy 2.0 (typed `Mapped`/`mapped_column`), Alembic, FastAPI, the `mcp` SDK's `FastMCP` class (`from mcp.server.fastmcp import FastMCP` — this is the stable, production-recommended API in `mcp`'s 1.x line, which is what `mcp>=1.28.0` actually resolves to; an earlier draft of this plan mistakenly used `MCPServer`, a class that only exists in `mcp`'s unreleased 2.0.0-alpha/beta pre-release line after verifying against the SDK repo's `main` branch instead of its stable release — Task 8's implementer caught this during execution and it was corrected before Task 8 completed), Pinecone Python SDK (package name `pinecone`, `from pinecone import Pinecone`), pytest, Docker Compose.
 
 ## Global Constraints
 
@@ -1407,7 +1407,7 @@ git commit -m "feat: add Alembic migration history and Postgres via Docker Compo
 
 **Interfaces:**
 - Consumes: nothing from prior tasks (this task only proves the MCP transport wiring works; the real 7 tools are implemented against this same file in M1).
-- Produces: `agentshield_tools.server.ping_impl() -> dict` (plain function, directly unit-testable); `agentshield_tools.server.mcp` (an `MCPServer` instance with the `ping` tool registered); `agentshield_tools.server.app` (the ASGI app from `mcp.streamable_http_app()`, run via `uvicorn agentshield_tools.server:app --host 0.0.0.0 --port 9000`).
+- Produces: `agentshield_tools.server.ping_impl() -> dict` (plain function, directly unit-testable); `agentshield_tools.server.mcp` (a `FastMCP` instance with the `ping` tool registered); `agentshield_tools.server.app` (the ASGI app from `mcp.streamable_http_app()`, run via `uvicorn agentshield_tools.server:app --host 0.0.0.0 --port 9000`).
 
 - [ ] **Step 1: Add `services/tool_server` to the workspace members**
 
@@ -1503,9 +1503,9 @@ This service is reachable only on the internal Docker network — see
 docker-compose.yml, where it deliberately has no published host port.
 """
 
-from mcp.server.mcpserver import MCPServer
+from mcp.server.fastmcp import FastMCP
 
-mcp = MCPServer("AgentShield Tools")
+mcp = FastMCP("AgentShield Tools")
 
 
 def ping_impl() -> dict:
