@@ -16,5 +16,44 @@ services:
       timeout: 5s
       retries: 10
 
+  tool_server:
+    build:
+      context: .
+      dockerfile: services/tool_server/Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://agentshield:change-me@db:5432/agentshield}
+    depends_on:
+      db:
+        condition: service_healthy
+    # Deliberately no `ports:` mapping — only reachable on the internal
+    # Docker network, by other services, as `tool_server:9000`.
+
+  api:
+    build:
+      context: .
+      dockerfile: services/api/Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://agentshield:change-me@db:5432/agentshield}
+      TOOL_SERVER_URL: http://tool_server:9000/mcp
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
+      OPENAI_EVAL_MODEL: ${OPENAI_EVAL_MODEL:-gpt-4o-mini}
+      PINECONE_API_KEY: ${PINECONE_API_KEY:-}
+      PINECONE_INDEX_NAME: ${PINECONE_INDEX_NAME:-agentshield-policies}
+      MOCK_MODE: ${MOCK_MODE:-true}
+      MAX_MODEL_CALLS_PER_RUN: ${MAX_MODEL_CALLS_PER_RUN:-50}
+      MAX_CONCURRENCY: ${MAX_CONCURRENCY:-4}
+      AGENT_MAX_STEPS: ${AGENT_MAX_STEPS:-8}
+      SECRET_KEY: ${SECRET_KEY:-change-me}
+    ports:
+      - "${API_PORT:-8020}:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      tool_server:
+        condition: service_started
+
 volumes:
   postgres-data:
