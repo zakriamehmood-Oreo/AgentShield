@@ -1,8 +1,11 @@
 """Populates Postgres (and, if a Pinecone API key is given, the Pinecone
-policy index) from dataset/. Deterministic and idempotent: re-running it
-against the same dataset produces the same row counts, by deriving every
-row's primary key from a stable input (customer_key / order_number /
-policy_key / external_key) rather than a random UUID, and upserting.
+policy index) from dataset/. Row *counts* are idempotent — re-running
+against the same dataset produces the same summary — because every call
+deletes all rows in these tables and reinserts fresh from the dataset.
+Primary keys are NOT stable across reseeds (each row gets a new random
+UUID via new_id() on every call); nothing in this codebase currently
+depends on IDs surviving a reseed, but don't rely on that if you add code
+that does.
 """
 
 import re
@@ -60,7 +63,14 @@ def _load_policy_docs(dataset_dir: Path) -> list[dict]:
     return policies
 
 
-def run_seed(database_url: str, dataset_dir: Path, pinecone_api_key: str = "") -> dict:
+def run_seed(
+    database_url: str,
+    dataset_dir: Path,
+    pinecone_api_key: str = "",
+    pinecone_index_name: str = "agentshield-policies",
+    pinecone_cloud: str = "aws",
+    pinecone_region: str = "us-east-1",
+) -> dict:
     engine = make_engine(database_url)
     Session = make_session_factory(engine)
 
@@ -117,7 +127,13 @@ def run_seed(database_url: str, dataset_dir: Path, pinecone_api_key: str = "") -
 
         pinecone_upserted = 0
         if pinecone_api_key:
-            pinecone_upserted = _upsert_policies_to_pinecone(pinecone_api_key, policy_rows)
+            pinecone_upserted = _upsert_policies_to_pinecone(
+                pinecone_api_key,
+                policy_rows,
+                index_name=pinecone_index_name,
+                cloud=pinecone_cloud,
+                region=pinecone_region,
+            )
 
         return {
             "customers": len(_SYNTHETIC_CUSTOMERS),
@@ -128,7 +144,13 @@ def run_seed(database_url: str, dataset_dir: Path, pinecone_api_key: str = "") -
         }
 
 
-def _upsert_policies_to_pinecone(api_key: str, policy_rows: list[dict]) -> int:
+def _upsert_policies_to_pinecone(
+    api_key: str,
+    policy_rows: list[dict],
+    index_name: str = "agentshield-policies",
+    cloud: str = "aws",
+    region: str = "us-east-1",
+) -> int:
     """Upserts policy text into a Pinecone serverless index with integrated
     embeddings, creating the index if it doesn't exist yet. Field names
     follow the Pinecone MCP plugin's schema rules: the embedded text lives
@@ -137,13 +159,12 @@ def _upsert_policies_to_pinecone(api_key: str, policy_rows: list[dict]) -> int:
     """
     from pinecone import Pinecone
 
-    index_name = "agentshield-policies"
     pc = Pinecone(api_key=api_key)
     if not pc.has_index(index_name):
         pc.create_index_for_model(
             name=index_name,
-            cloud="aws",
-            region="us-east-1",
+            cloud=cloud,
+            region=region,
             embed={"model": "llama-text-embed-v2", "field_map": {"text": "content"}},
         )
     index = pc.Index(index_name)

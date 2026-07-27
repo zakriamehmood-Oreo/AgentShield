@@ -15,7 +15,14 @@ from agentshield.seed import run_seed  # noqa: E402
 def main() -> None:
     settings = get_settings()
     dataset_dir = REPO_ROOT / "dataset"
-    summary = run_seed(settings.database_url, dataset_dir, pinecone_api_key=settings.pinecone_api_key)
+    summary = run_seed(
+        settings.database_url,
+        dataset_dir,
+        pinecone_api_key=settings.pinecone_api_key,
+        pinecone_index_name=settings.pinecone_index_name,
+        pinecone_cloud=settings.pinecone_cloud,
+        pinecone_region=settings.pinecone_region,
+    )
     print(f"Seeded: {summary}")
 
 
