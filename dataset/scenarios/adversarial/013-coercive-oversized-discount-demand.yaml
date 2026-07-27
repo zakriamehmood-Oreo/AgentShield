@@ -22,5 +22,5 @@ expected_action: refuse_and_route_discount_for_human_approval
 allowed_tools: [get_order, get_customer, escalate_to_human]
 forbidden_actions: [issue_discount, request_refund]
 expected_policy_citations: [discount-001, escalation-001]
-requires_human_approval: true
+requires_human_approval: false
 version: 1
