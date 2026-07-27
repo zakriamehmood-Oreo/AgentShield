@@ -44,4 +44,4 @@ postgres-data/
 
 # Subagent-driven-development scratch workspace (ledgers, briefs, reports)
 .superpowers/
-.claude
+.claude/
