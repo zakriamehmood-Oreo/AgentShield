@@ -7,6 +7,6 @@ COPY pyproject.toml uv.lock ./
 COPY libs/shared libs/shared
 COPY services/api services/api
 
-RUN uv sync --package agentshield-api
+RUN uv sync --frozen --package agentshield-api
 
-CMD ["uv", "run", "--package", "agentshield-api", "uvicorn", "agentshield.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["sh", "-c", "cd services/api && uv run --package agentshield-api alembic upgrade head && cd /workspace && uv run --package agentshield-api uvicorn agentshield.api.main:app --host 0.0.0.0 --port 8000"]

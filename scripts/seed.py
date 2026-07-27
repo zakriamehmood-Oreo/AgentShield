@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-"""CLI entrypoint: `uv run --project services/api python ../../scripts/seed.py`
-(or, from the repo root, `uv run --package agentshield-api python scripts/seed.py`)."""
+"""CLI entrypoint: from the repo root, run
+`uv run --package agentshield-api python scripts/seed.py`."""
 
 import sys
 from pathlib import Path

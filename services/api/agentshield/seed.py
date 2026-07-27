@@ -6,9 +6,32 @@ Primary keys are NOT stable across reseeds (each row gets a new random
 UUID via new_id() on every call); nothing in this codebase currently
 depends on IDs surviving a reseed, but don't rely on that if you add code
 that does.
+
+Dataset <-> database identity contract
+---------------------------------------
+The 5 hardcoded customers/orders in `_SYNTHETIC_CUSTOMERS`/`_SYNTHETIC_ORDERS`
+below are baseline demo/dev-environment data. That set includes exactly one
+fixture (`ORD-1042` / `CUST-0042`) that backs this project's literal
+acceptance-test scenario, `dataset/scenarios/adversarial/003-order-note-refund-injection.yaml`.
+
+The other 95 scenarios in `dataset/scenarios/**/*.yaml` each carry their own
+`account_state` block describing customers/orders that are NOT pre-seeded
+here — those are per-scenario fixtures. A future scenario-runner (the
+attack simulator / eval engine, planned for a later milestone) is expected
+to materialize whatever rows a given scenario needs (or mock them at the
+tool layer) at the time it actually runs that scenario, rather than relying
+on a permanently shared seed covering every scenario up front.
+
+Where a scenario's `account_state` DOES need to resolve to a real `Order`/
+`Customer` row (as with adversarial/003 today), the stable identifier to
+join on is `order_number` / `customer_key` — both are present and
+consistent across every scenario file and these seed fixtures. Do NOT join
+on a scenario's informal `order_id`/`customer_id` field (present in some
+`account_state` blocks purely for human readability) or on the database's
+own randomly-generated UUID primary key — neither is guaranteed to line up
+with anything.
 """
 
-import re
 from pathlib import Path
 
 import frontmatter
@@ -52,14 +75,17 @@ def _load_policy_docs(dataset_dir: Path) -> list[dict]:
     policies = []
     for md_path in sorted((dataset_dir / "policies").glob("*.md")):
         post = frontmatter.loads(md_path.read_text())
-        policies.append(
-            {
-                "policy_key": post["policy_key"],
-                "title": post["title"],
-                "body": post.content.strip(),
-                "tags": post.get("tags", []),
-            }
-        )
+        try:
+            policies.append(
+                {
+                    "policy_key": post["policy_key"],
+                    "title": post["title"],
+                    "body": post.content.strip(),
+                    "tags": post.get("tags", []),
+                }
+            )
+        except KeyError as exc:
+            raise ValueError(f"Policy doc {md_path} is missing required frontmatter field: {exc}") from exc
     return policies
 
 
@@ -75,8 +101,10 @@ def run_seed(
     Session = make_session_factory(engine)
 
     with Session() as session:
-        session.execute(delete(Order))
+        # Shipment.order_id is a FK to orders.id, so Shipment must be
+        # deleted before Order.
         session.execute(delete(Shipment))
+        session.execute(delete(Order))
         session.execute(delete(Customer))
         session.execute(delete(Policy))
         session.execute(delete(Scenario))
@@ -135,13 +163,16 @@ def run_seed(
                 region=pinecone_region,
             )
 
-        return {
+        summary = {
             "customers": len(_SYNTHETIC_CUSTOMERS),
             "orders": len(_SYNTHETIC_ORDERS),
             "policies": len(policy_rows),
             "scenarios": len(scenario_files),
             "pinecone_upserted": pinecone_upserted,
         }
+
+    engine.dispose()
+    return summary
 
 
 def _upsert_policies_to_pinecone(

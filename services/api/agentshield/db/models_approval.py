@@ -1,9 +1,20 @@
 """Human-approval lifecycle and the immutable, hash-chained audit log.
 
-AuditLog is append-only by convention (no code path in this codebase issues
-an UPDATE or DELETE against it): each row's `hash` commits to its own
-payload plus the previous row's hash, so any row tampered with after the
-fact breaks the chain for every row after it.
+Each `AuditLog` row's `hash` commits to that row's `entity_type`,
+`entity_id`, `actor`, `action`, and `payload`, chained together with the
+previous row's hash (`prev_hash`) via `compute_next_hash()`. That means any
+row whose `entity_type`, `entity_id`, `actor`, `action`, or `payload` is
+altered after the fact breaks the chain for every row after it — in
+particular, `actor`/`action` (who did what) can't be silently rewritten
+without detection.
+
+What this does NOT cover yet: append-only enforcement. Nothing here stops
+a caller (or an attacker with UPDATE/DELETE access on `audit_log`) from
+rewriting a row *and* recomputing every subsequent hash to match, since the
+hash chain only detects tampering, it doesn't prevent rewriting. Enforcing
+true append-only-ness (e.g. a DB trigger rejecting UPDATE/DELETE, plus a
+`verify_chain()` helper to detect breaks) is a known gap, tracked for M3,
+not this fix.
 """
 
 import hashlib
@@ -16,9 +27,28 @@ from sqlalchemy.orm import Mapped, mapped_column
 from agentshield_shared.db.base import Base, new_id, utc_now
 
 
-def compute_next_hash(prev_hash: str | None, payload: dict) -> str:
-    canonical_payload = json.dumps(payload, sort_keys=True, default=str)
-    digest_input = f"{prev_hash or ''}|{canonical_payload}".encode("utf-8")
+def compute_next_hash(
+    prev_hash: str | None,
+    entity_type: str,
+    entity_id: str,
+    actor: str,
+    action: str,
+    payload: dict,
+) -> str:
+    # `created_at` is deliberately excluded: it's assigned by the ORM at
+    # insert time via `utc_now()`, so covering it here would require
+    # restructuring how rows get their timestamp. A future write path that
+    # also wants tamper-evidence over the timestamp can pass an explicit
+    # value through this same function later.
+    entry = {
+        "entity_type": entity_type,
+        "entity_id": entity_id,
+        "actor": actor,
+        "action": action,
+        "payload": payload,
+    }
+    canonical_entry = json.dumps(entry, sort_keys=True, default=str)
+    digest_input = f"{prev_hash or ''}|{canonical_entry}".encode("utf-8")
     return hashlib.sha256(digest_input).hexdigest()
 
 

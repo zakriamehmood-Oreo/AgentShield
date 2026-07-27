@@ -45,7 +45,14 @@ def test_approval_request_and_audit_log_round_trip():
     session.add(approval)
     session.commit()
 
-    first_hash = compute_next_hash(None, {"action": "created"})
+    first_hash = compute_next_hash(
+        None,
+        entity_type="approval_request",
+        entity_id=approval.id,
+        actor="operator@example.com",
+        action="approve",
+        payload={"action": "created"},
+    )
     audit_row = AuditLog(
         entity_type="approval_request",
         entity_id=approval.id,
@@ -65,10 +72,14 @@ def test_approval_request_and_audit_log_round_trip():
 
 
 def test_compute_next_hash_changes_with_prev_hash_and_is_deterministic():
-    h1 = compute_next_hash(None, {"a": 1})
-    h2 = compute_next_hash(h1, {"a": 1})
+    common = dict(entity_type="approval_request", entity_id="e1", actor="a@example.com", action="approve", payload={"a": 1})
+    h1 = compute_next_hash(None, **common)
+    h2 = compute_next_hash(h1, **common)
     assert h1 != h2
-    assert compute_next_hash(None, {"a": 1}) == h1  # deterministic given same inputs
+    assert compute_next_hash(None, **common) == h1  # deterministic given same inputs
+
+    h3 = compute_next_hash(None, **{**common, "actor": "different@example.com"})
+    assert h3 != h1  # changing actor changes the hash — this is the fix's whole point
 
 
 def test_agent_version_scenario_eval_run_result_and_regression_round_trip():

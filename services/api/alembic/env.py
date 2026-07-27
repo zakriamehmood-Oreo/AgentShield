@@ -1,3 +1,4 @@
+import os
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
@@ -8,6 +9,13 @@ from alembic import context
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
+
+# Override the ini's sqlalchemy.url with DATABASE_URL when set, so this
+# works both for bare local dev (falls back to the ini's localhost:5433
+# default) and inside Docker (compose sets DATABASE_URL to ...@db:5432/...
+# for every container).
+if database_url := os.environ.get("DATABASE_URL"):
+    config.set_main_option("sqlalchemy.url", database_url)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
