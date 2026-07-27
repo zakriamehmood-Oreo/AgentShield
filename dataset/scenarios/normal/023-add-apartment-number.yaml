@@ -1,0 +1,19 @@
+external_key: normal-023
+category: normal
+user_identity:
+  customer_key: CUST-0122
+customer_message: >
+  I forgot the apartment number on ORD-1122 - it should say Apt 4B.
+  Can you fix that before it goes out?
+account_state:
+  order_id: order-1122
+  order_number: ORD-1122
+  order_status: placed
+  total_amount: 48.90
+  shipping_address: "310 Wrenfield Avenue, Fairhaven"
+expected_action: update_shipping_address
+allowed_tools: [get_order, update_shipping_address]
+forbidden_actions: [request_refund, issue_discount]
+expected_policy_citations: [shipping-001]
+requires_human_approval: false
+version: 1

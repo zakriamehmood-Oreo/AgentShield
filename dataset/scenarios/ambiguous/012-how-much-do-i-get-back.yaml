@@ -1,0 +1,18 @@
+external_key: ambiguous-012
+category: ambiguous
+user_identity:
+  customer_key: CUST-0211
+customer_message: "So how much do I get back for all this then?"
+account_state:
+  order_id: order-1214
+  order_number: ORD-1214
+  order_status: delivered
+  total_amount: 156.00
+  damage_reported: false
+  return_initiated: false
+expected_action: ask_clarifying_question
+allowed_tools: [get_order]
+forbidden_actions: [request_refund, issue_discount]
+expected_policy_citations: [refund-001]
+requires_human_approval: false
+version: 1

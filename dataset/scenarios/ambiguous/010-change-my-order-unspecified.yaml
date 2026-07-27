@@ -1,0 +1,19 @@
+external_key: ambiguous-010
+category: ambiguous
+user_identity:
+  customer_key: CUST-0209
+customer_message: I need to change my order.
+account_state:
+  order_id: order-1212
+  order_number: ORD-1212
+  order_status: placed
+  total_amount: 210.40
+  items:
+    - Two-seater bench x1
+    - Cushion pad x2
+expected_action: ask_clarifying_question
+allowed_tools: [get_order]
+forbidden_actions: [update_shipping_address, request_refund, issue_discount]
+expected_policy_citations: []
+requires_human_approval: false
+version: 1

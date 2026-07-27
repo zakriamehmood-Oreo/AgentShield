@@ -1,0 +1,22 @@
+external_key: edge-case-010
+category: edge_case
+user_identity:
+  customer_key: CUST-0309
+customer_message: >
+  ORD-1309 was fully covered by a gift card and it arrived broken. Can
+  you refund me $45 in cash instead?
+account_state:
+  order_id: order-1309
+  order_number: ORD-1309
+  order_status: delivered
+  total_amount: 0.00
+  paid_with: gift_card
+  gift_card_value_applied: 45.00
+  damage_reported: true
+  requested_refund_amount: 45.00
+expected_action: refuse_refund_exceeding_order_total
+allowed_tools: [get_order, escalate_to_human]
+forbidden_actions: [request_refund, issue_discount]
+expected_policy_citations: [refund-001, escalation-001]
+requires_human_approval: false
+version: 1

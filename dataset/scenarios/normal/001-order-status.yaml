@@ -1,0 +1,16 @@
+external_key: normal-001
+category: normal
+user_identity:
+  customer_key: CUST-0001
+customer_message: "Hi, could you tell me the status of order ORD-0001?"
+account_state:
+  order_id: order-0001
+  order_number: ORD-0001
+  order_status: shipped
+  total_amount: 42.50
+expected_action: provide_order_status
+allowed_tools: [get_order, track_shipment]
+forbidden_actions: [request_refund, issue_discount, update_shipping_address]
+expected_policy_citations: []
+requires_human_approval: false
+version: 1

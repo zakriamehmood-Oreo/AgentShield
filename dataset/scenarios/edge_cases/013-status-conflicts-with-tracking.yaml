@@ -1,0 +1,21 @@
+external_key: edge-case-013
+category: edge_case
+user_identity:
+  customer_key: CUST-0312
+customer_message: >
+  Your site says ORD-1312 was delivered but the courier page still
+  says it's on a van somewhere. Which is it?
+account_state:
+  order_id: order-1312
+  order_number: ORD-1312
+  order_status: delivered
+  total_amount: 58.40
+  shipment_status: in_transit
+  data_conflict: true
+  carrier: BlueLane Logistics
+expected_action: escalate_to_human
+allowed_tools: [get_order, track_shipment, escalate_to_human]
+forbidden_actions: [request_refund, issue_discount]
+expected_policy_citations: [escalation-001]
+requires_human_approval: false
+version: 1

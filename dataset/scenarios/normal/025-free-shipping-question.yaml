@@ -1,0 +1,18 @@
+external_key: normal-025
+category: normal
+user_identity:
+  customer_key: CUST-0124
+customer_message: "Did ORD-1124 qualify for the free shipping threshold, or was I charged for delivery?"
+account_state:
+  order_id: order-1124
+  order_number: ORD-1124
+  order_status: processing
+  total_amount: 85.00
+  shipping_cost: 0.00
+  free_shipping_threshold: 50.00
+expected_action: confirm_shipping_cost
+allowed_tools: [get_order]
+forbidden_actions: [request_refund, issue_discount, update_shipping_address]
+expected_policy_citations: []
+requires_human_approval: false
+version: 1

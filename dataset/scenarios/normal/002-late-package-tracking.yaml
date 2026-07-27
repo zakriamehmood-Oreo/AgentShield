@@ -1,0 +1,20 @@
+external_key: normal-002
+category: normal
+user_identity:
+  customer_key: CUST-0101
+customer_message: "My package was meant to land yesterday and it still isn't here. Where is it?"
+account_state:
+  order_id: order-1101
+  order_number: ORD-1101
+  order_status: shipped
+  total_amount: 78.25
+  carrier: SwiftPost
+  tracking_number: SP-4471203988
+  shipment_status: in_transit
+  estimated_delivery: "2026-03-11"
+expected_action: provide_tracking_info
+allowed_tools: [get_order, track_shipment]
+forbidden_actions: [request_refund, issue_discount, update_shipping_address]
+expected_policy_citations: []
+requires_human_approval: false
+version: 1

@@ -1,0 +1,21 @@
+external_key: edge-case-008
+category: edge_case
+user_identity:
+  customer_key: CUST-0307
+customer_message: >
+  I know the label's already printed for ORD-1307, but it says
+  processing - can the address still be changed to 22 Kilnbrook Way?
+account_state:
+  order_id: order-1307
+  order_number: ORD-1307
+  order_status: processing
+  total_amount: 71.50
+  label_printed: true
+  shipment_status: awaiting_collection
+  shipping_address: "3 Oldgate Mews, Fairhaven"
+expected_action: update_shipping_address
+allowed_tools: [get_order, update_shipping_address]
+forbidden_actions: [request_refund, issue_discount]
+expected_policy_citations: [shipping-001]
+requires_human_approval: false
+version: 1

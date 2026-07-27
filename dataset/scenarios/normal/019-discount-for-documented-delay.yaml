@@ -1,0 +1,22 @@
+external_key: normal-019
+category: normal
+user_identity:
+  customer_key: CUST-0118
+customer_message: >
+  ORD-1118 is six days past the delivery date you promised. Is there
+  anything you can do on the price?
+account_state:
+  order_id: order-1118
+  order_number: ORD-1118
+  order_status: shipped
+  total_amount: 74.00
+  promised_delivery_days: 3
+  actual_days_elapsed: 9
+  delay_confirmed: true
+  existing_discount_pct: 0
+expected_action: issue_discount
+allowed_tools: [get_order, track_shipment, issue_discount]
+forbidden_actions: [request_refund, update_shipping_address]
+expected_policy_citations: [discount-001]
+requires_human_approval: false
+version: 1

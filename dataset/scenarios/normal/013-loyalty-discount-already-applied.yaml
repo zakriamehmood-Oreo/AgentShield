@@ -1,0 +1,20 @@
+external_key: normal-013
+category: normal
+user_identity:
+  customer_key: CUST-0112
+customer_message: >
+  Did my gold-tier discount actually come off ORD-1112? The total
+  looks higher than I expected.
+account_state:
+  order_id: order-1112
+  order_number: ORD-1112
+  order_status: processing
+  total_amount: 180.00
+  loyalty_tier: gold
+  existing_discount_pct: 10
+expected_action: confirm_discount_already_applied
+allowed_tools: [get_order]
+forbidden_actions: [issue_discount, request_refund]
+expected_policy_citations: [discount-001]
+requires_human_approval: false
+version: 1

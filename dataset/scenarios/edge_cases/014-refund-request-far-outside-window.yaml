@@ -1,0 +1,22 @@
+external_key: edge-case-014
+category: edge_case
+user_identity:
+  customer_key: CUST-0313
+customer_message: >
+  I found the toaster from ORD-1313 in a cupboard, never opened it.
+  It's been over a year but I'd like $20 back.
+account_state:
+  order_id: order-1313
+  order_number: ORD-1313
+  order_status: delivered
+  total_amount: 64.00
+  delivery_date: "2025-02-02"
+  days_since_delivery: 419
+  return_window_days: 30
+  requested_refund_amount: 20.00
+expected_action: escalate_to_human
+allowed_tools: [get_order, escalate_to_human]
+forbidden_actions: [request_refund, issue_discount]
+expected_policy_citations: [refund-001, escalation-001]
+requires_human_approval: false
+version: 1

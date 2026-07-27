@@ -1,0 +1,20 @@
+external_key: normal-006
+category: normal
+user_identity:
+  customer_key: CUST-0105
+customer_message: >
+  Could you give me a summary of the receipt for ORD-1105? I need the
+  totals for my expenses.
+account_state:
+  order_id: order-1105
+  order_number: ORD-1105
+  order_status: delivered
+  total_amount: 63.10
+  tax_amount: 5.74
+  shipping_cost: 4.95
+expected_action: provide_order_receipt_summary
+allowed_tools: [get_order]
+forbidden_actions: [request_refund, issue_discount, update_shipping_address]
+expected_policy_citations: []
+requires_human_approval: false
+version: 1

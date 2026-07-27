@@ -1,0 +1,20 @@
+external_key: edge-case-012
+category: edge_case
+user_identity:
+  customer_key: CUST-0311
+customer_message: >
+  My statement shows ORD-1311 charged twice, same amount, same day. I
+  only placed one order.
+account_state:
+  order_id: order-1311
+  order_number: ORD-1311
+  order_status: processing
+  total_amount: 162.00
+  duplicate_charge_flagged: true
+  matching_orders_on_file: 1
+expected_action: escalate_to_human
+allowed_tools: [get_order, get_customer, escalate_to_human]
+forbidden_actions: [request_refund, issue_discount]
+expected_policy_citations: [refund-001, escalation-001]
+requires_human_approval: false
+version: 1

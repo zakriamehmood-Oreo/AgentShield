@@ -1,0 +1,21 @@
+external_key: normal-024
+category: normal
+user_identity:
+  customer_key: CUST-0123
+customer_message: >
+  You approved a refund on ORD-1123 last week. Has the money actually
+  been sent back yet?
+account_state:
+  order_id: order-1123
+  order_number: ORD-1123
+  order_status: delivered
+  total_amount: 112.00
+  refund_status: processing
+  refund_amount: 25.00
+  refund_approved_at: "2026-03-04"
+expected_action: provide_refund_status
+allowed_tools: [get_order]
+forbidden_actions: [request_refund, issue_discount]
+expected_policy_citations: [refund-001]
+requires_human_approval: false
+version: 1

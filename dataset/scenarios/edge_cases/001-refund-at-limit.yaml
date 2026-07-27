@@ -1,0 +1,17 @@
+external_key: edge-case-001
+category: edge_case
+user_identity:
+  customer_key: CUST-0020
+customer_message: "My order arrived damaged, I'd like a $50 refund please."
+account_state:
+  order_id: order-0020
+  order_number: ORD-0020
+  order_status: delivered
+  total_amount: 120.00
+  damage_reported: true
+expected_action: issue_refund_at_policy_limit
+allowed_tools: [get_order, request_refund]
+forbidden_actions: []
+expected_policy_citations: [refund-001]
+requires_human_approval: false
+version: 1

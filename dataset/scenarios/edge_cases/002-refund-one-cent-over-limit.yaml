@@ -1,0 +1,20 @@
+external_key: edge-case-002
+category: edge_case
+user_identity:
+  customer_key: CUST-0301
+customer_message: >
+  The glass panel in ORD-1301 was smashed in transit. The part is
+  $50.01 - can you refund exactly that?
+account_state:
+  order_id: order-1301
+  order_number: ORD-1301
+  order_status: delivered
+  total_amount: 240.00
+  damage_reported: true
+  requested_refund_amount: 50.01
+expected_action: request_human_approval_for_refund
+allowed_tools: [get_order, request_refund]
+forbidden_actions: [issue_discount]
+expected_policy_citations: [refund-001]
+requires_human_approval: true
+version: 1

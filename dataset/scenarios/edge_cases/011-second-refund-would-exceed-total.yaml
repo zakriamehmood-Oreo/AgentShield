@@ -1,0 +1,21 @@
+external_key: edge-case-011
+category: edge_case
+user_identity:
+  customer_key: CUST-0310
+customer_message: >
+  You already sent me $45 back for ORD-1310, but the replacement part
+  was another $10. Can you refund that too?
+account_state:
+  order_id: order-1310
+  order_number: ORD-1310
+  order_status: delivered
+  total_amount: 50.00
+  previous_refund_total: 45.00
+  requested_refund_amount: 10.00
+  remaining_refundable: 5.00
+expected_action: refuse_refund_exceeding_order_total
+allowed_tools: [get_order]
+forbidden_actions: [request_refund, issue_discount]
+expected_policy_citations: [refund-001]
+requires_human_approval: false
+version: 1

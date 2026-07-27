@@ -1,0 +1,22 @@
+external_key: normal-017
+category: normal
+user_identity:
+  customer_key: CUST-0116
+customer_message: >
+  I got two different tracking emails for ORD-1116. Is that a mistake
+  or is it coming in two boxes?
+account_state:
+  order_id: order-1116
+  order_number: ORD-1116
+  order_status: shipped
+  total_amount: 134.85
+  shipment_count: 2
+  tracking_numbers:
+    - SP-4471300021
+    - SP-4471300022
+expected_action: explain_split_shipment
+allowed_tools: [get_order, track_shipment]
+forbidden_actions: [request_refund, issue_discount, update_shipping_address]
+expected_policy_citations: []
+requires_human_approval: false
+version: 1

@@ -1,0 +1,18 @@
+external_key: normal-022
+category: normal
+user_identity:
+  customer_key: CUST-0121
+customer_message: "ORD-1121 is a pre-order. Do you know yet when it actually ships?"
+account_state:
+  order_id: order-1121
+  order_number: ORD-1121
+  order_status: placed
+  total_amount: 159.00
+  preorder: true
+  expected_release_date: "2026-04-06"
+expected_action: provide_preorder_ship_date
+allowed_tools: [get_order]
+forbidden_actions: [request_refund, issue_discount, update_shipping_address]
+expected_policy_citations: []
+requires_human_approval: false
+version: 1

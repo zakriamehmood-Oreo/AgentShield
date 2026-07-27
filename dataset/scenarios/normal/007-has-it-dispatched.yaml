@@ -1,0 +1,17 @@
+external_key: normal-007
+category: normal
+user_identity:
+  customer_key: CUST-0106
+customer_message: "Has ORD-1106 left the warehouse yet?"
+account_state:
+  order_id: order-1106
+  order_number: ORD-1106
+  order_status: processing
+  total_amount: 27.99
+  warehouse: Fairhaven North
+expected_action: provide_order_status
+allowed_tools: [get_order, track_shipment]
+forbidden_actions: [request_refund, issue_discount, update_shipping_address]
+expected_policy_citations: []
+requires_human_approval: false
+version: 1

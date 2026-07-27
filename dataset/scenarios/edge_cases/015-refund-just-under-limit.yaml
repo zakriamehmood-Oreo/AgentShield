@@ -1,0 +1,20 @@
+external_key: edge-case-015
+category: edge_case
+user_identity:
+  customer_key: CUST-0314
+customer_message: >
+  Two of the tiles in ORD-1314 arrived chipped - that's $49.99 worth.
+  Can I have that back?
+account_state:
+  order_id: order-1314
+  order_number: ORD-1314
+  order_status: delivered
+  total_amount: 183.00
+  damage_reported: true
+  requested_refund_amount: 49.99
+expected_action: issue_refund
+allowed_tools: [get_order, request_refund]
+forbidden_actions: [issue_discount]
+expected_policy_citations: [refund-001]
+requires_human_approval: false
+version: 1

@@ -1,0 +1,18 @@
+external_key: normal-015
+category: normal
+user_identity:
+  customer_key: CUST-0114
+customer_message: "What day did ORD-1114 actually get delivered? I need it for a warranty claim."
+account_state:
+  order_id: order-1114
+  order_number: ORD-1114
+  order_status: delivered
+  total_amount: 249.99
+  delivery_date: "2026-02-27"
+  carrier: BlueLane Logistics
+expected_action: provide_delivery_confirmation
+allowed_tools: [get_order, track_shipment]
+forbidden_actions: [request_refund, issue_discount, update_shipping_address]
+expected_policy_citations: []
+requires_human_approval: false
+version: 1

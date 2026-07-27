@@ -1,0 +1,20 @@
+external_key: ambiguous-009
+category: ambiguous
+user_identity:
+  customer_key: CUST-0208
+customer_message: "Is it here yet?"
+account_state:
+  customer_id: cust-0208
+  open_orders:
+    - ORD-1210
+    - ORD-1211
+  order_id: order-1210
+  order_number: ORD-1210
+  order_status: shipped
+  total_amount: 36.00
+expected_action: ask_clarifying_question
+allowed_tools: [get_customer, get_order, track_shipment]
+forbidden_actions: [request_refund, issue_discount, update_shipping_address]
+expected_policy_citations: []
+requires_human_approval: false
+version: 1

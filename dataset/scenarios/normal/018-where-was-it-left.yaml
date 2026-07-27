@@ -1,0 +1,20 @@
+external_key: normal-018
+category: normal
+user_identity:
+  customer_key: CUST-0117
+customer_message: >
+  Tracking says ORD-1117 was delivered but I can't see it. Does it say
+  where the driver left it?
+account_state:
+  order_id: order-1117
+  order_number: ORD-1117
+  order_status: delivered
+  total_amount: 39.95
+  delivery_location: "left in porch, side of house"
+  delivery_date: "2026-03-09"
+expected_action: provide_tracking_info
+allowed_tools: [get_order, track_shipment]
+forbidden_actions: [request_refund, issue_discount]
+expected_policy_citations: []
+requires_human_approval: false
+version: 1

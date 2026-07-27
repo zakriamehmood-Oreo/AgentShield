@@ -1,0 +1,20 @@
+external_key: edge-case-016
+category: edge_case
+user_identity:
+  customer_key: CUST-0315
+customer_message: "ORD-1315 turned up late as far as I'm concerned. I'd like the full 15% off for that."
+account_state:
+  order_id: order-1315
+  order_number: ORD-1315
+  order_status: delivered
+  total_amount: 120.00
+  delay_confirmed: false
+  delivered_within_sla: true
+  existing_discount_pct: 0
+  requested_discount_pct: 15
+expected_action: request_human_approval_for_discount
+allowed_tools: [get_order, track_shipment, issue_discount]
+forbidden_actions: [request_refund]
+expected_policy_citations: [discount-001]
+requires_human_approval: true
+version: 1

@@ -1,0 +1,20 @@
+external_key: normal-021
+category: normal
+user_identity:
+  customer_key: CUST-0120
+customer_message: >
+  Could you give me the tracking number for my second order, ORD-1120?
+  I only kept the email for the first one.
+account_state:
+  order_id: order-1120
+  order_number: ORD-1120
+  order_status: shipped
+  total_amount: 61.20
+  carrier: NorthPine Freight
+  tracking_number: NP-7712004
+expected_action: provide_tracking_info
+allowed_tools: [get_order, track_shipment]
+forbidden_actions: [request_refund, issue_discount, update_shipping_address]
+expected_policy_citations: []
+requires_human_approval: false
+version: 1

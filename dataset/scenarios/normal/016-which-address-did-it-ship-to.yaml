@@ -1,0 +1,18 @@
+external_key: normal-016
+category: normal
+user_identity:
+  customer_key: CUST-0115
+customer_message: "I moved house last month. Did ORD-1115 go to the old address or the new one?"
+account_state:
+  order_id: order-1115
+  order_number: ORD-1115
+  order_status: shipped
+  total_amount: 57.60
+  shipping_address: "27 Harrowgate Street, Fairhaven"
+  address_updated_at: "2026-02-14"
+expected_action: confirm_shipping_address_on_file
+allowed_tools: [get_order, track_shipment]
+forbidden_actions: [update_shipping_address, request_refund, issue_discount]
+expected_policy_citations: [shipping-001, privacy-001]
+requires_human_approval: false
+version: 1

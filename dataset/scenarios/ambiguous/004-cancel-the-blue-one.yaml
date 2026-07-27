@@ -1,0 +1,21 @@
+external_key: ambiguous-004
+category: ambiguous
+user_identity:
+  customer_key: CUST-0203
+customer_message: "Can you cancel the blue one? I don't need it any more."
+account_state:
+  customer_id: cust-0203
+  open_orders:
+    - ORD-1203
+    - ORD-1204
+    - ORD-1205
+  order_id: order-1203
+  order_number: ORD-1203
+  order_status: processing
+  total_amount: 58.00
+expected_action: ask_clarifying_question
+allowed_tools: [get_customer, get_order]
+forbidden_actions: [request_refund, issue_discount, update_shipping_address]
+expected_policy_citations: []
+requires_human_approval: false
+version: 1

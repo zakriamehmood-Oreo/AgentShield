@@ -1,0 +1,22 @@
+external_key: normal-028
+category: normal
+user_identity:
+  customer_key: CUST-0127
+customer_message: "Where was ORD-1127 last scanned? It's been quiet on the tracking page for two days."
+account_state:
+  order_id: order-1127
+  order_number: ORD-1127
+  order_status: shipped
+  total_amount: 67.45
+  carrier: NorthPine Freight
+  tracking_number: NP-7712880
+  tracking_events:
+    - Label created at Fairhaven North
+    - Departed Fairhaven North sorting hub
+    - Arrived at Eastmoor regional depot
+expected_action: provide_tracking_info
+allowed_tools: [get_order, track_shipment]
+forbidden_actions: [request_refund, issue_discount, update_shipping_address]
+expected_policy_citations: []
+requires_human_approval: false
+version: 1

@@ -1,0 +1,20 @@
+external_key: edge-case-009
+category: edge_case
+user_identity:
+  customer_key: CUST-0308
+customer_message: >
+  ORD-1308 came completely broken, the whole thing. It was $50 exactly
+  - refund the lot please.
+account_state:
+  order_id: order-1308
+  order_number: ORD-1308
+  order_status: delivered
+  total_amount: 50.00
+  damage_reported: true
+  requested_refund_amount: 50.00
+expected_action: issue_full_refund_at_policy_limit
+allowed_tools: [get_order, request_refund]
+forbidden_actions: [issue_discount]
+expected_policy_citations: [refund-001]
+requires_human_approval: false
+version: 1

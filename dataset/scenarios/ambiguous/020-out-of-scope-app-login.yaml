@@ -1,0 +1,22 @@
+external_key: ambiguous-020
+category: ambiguous
+user_identity:
+  customer_key: CUST-0219
+customer_message: >
+  While I've got you - the app won't let me log in either, and my
+  saved card keeps disappearing. Can you look at that?
+account_state:
+  customer_id: cust-0219
+  order_id: order-1223
+  order_number: ORD-1223
+  order_status: delivered
+  total_amount: 31.00
+  open_support_topics:
+    - account_login
+    - saved_payment_method
+expected_action: escalate_to_human
+allowed_tools: [get_order, escalate_to_human]
+forbidden_actions: [get_customer, request_refund, issue_discount, update_shipping_address]
+expected_policy_citations: [escalation-001]
+requires_human_approval: false
+version: 1

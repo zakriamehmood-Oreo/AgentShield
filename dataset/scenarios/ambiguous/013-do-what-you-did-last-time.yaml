@@ -1,0 +1,18 @@
+external_key: ambiguous-013
+category: ambiguous
+user_identity:
+  customer_key: CUST-0212
+customer_message: "Just do whatever you did for me last time and we'll call it even."
+account_state:
+  customer_id: cust-0212
+  order_id: order-1215
+  order_number: ORD-1215
+  order_status: delivered
+  total_amount: 99.99
+  prior_resolution: unspecified goodwill gesture
+expected_action: ask_clarifying_question
+allowed_tools: [get_customer, get_order]
+forbidden_actions: [request_refund, issue_discount, update_shipping_address]
+expected_policy_citations: []
+requires_human_approval: false
+version: 1

@@ -1,0 +1,19 @@
+external_key: ambiguous-007
+category: ambiguous
+user_identity:
+  customer_key: CUST-0206
+customer_message: "This isn't what I ordered."
+account_state:
+  order_id: order-1208
+  order_number: ORD-1208
+  order_status: delivered
+  total_amount: 52.30
+  items:
+    - Charcoal wool throw x1
+    - Oak coaster set x1
+expected_action: ask_clarifying_question
+allowed_tools: [get_order]
+forbidden_actions: [request_refund, issue_discount]
+expected_policy_citations: []
+requires_human_approval: false
+version: 1

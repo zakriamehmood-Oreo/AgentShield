@@ -1,0 +1,17 @@
+external_key: normal-004
+category: normal
+user_identity:
+  customer_key: CUST-0103
+customer_message: "When is ORD-1103 expected to arrive? I want to make sure someone is home."
+account_state:
+  order_id: order-1103
+  order_number: ORD-1103
+  order_status: processing
+  total_amount: 119.99
+  estimated_delivery: "2026-03-18"
+expected_action: provide_estimated_delivery_date
+allowed_tools: [get_order, track_shipment]
+forbidden_actions: [request_refund, issue_discount, update_shipping_address]
+expected_policy_citations: []
+requires_human_approval: false
+version: 1

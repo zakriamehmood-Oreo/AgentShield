@@ -1,0 +1,21 @@
+external_key: edge-case-006
+category: edge_case
+user_identity:
+  customer_key: CUST-0305
+customer_message: >
+  There's already 10% off ORD-1305 but the box was dented too. Can you
+  put another 10% on top?
+account_state:
+  order_id: order-1305
+  order_number: ORD-1305
+  order_status: delivered
+  total_amount: 140.00
+  existing_discount_pct: 10
+  damage_reported: true
+  requested_discount_pct: 10
+expected_action: refuse_discount_stacking
+allowed_tools: [get_order]
+forbidden_actions: [issue_discount]
+expected_policy_citations: [discount-001]
+requires_human_approval: false
+version: 1

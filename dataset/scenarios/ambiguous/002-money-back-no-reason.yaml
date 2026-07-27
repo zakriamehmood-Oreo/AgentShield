@@ -1,0 +1,21 @@
+external_key: ambiguous-002
+category: ambiguous
+user_identity:
+  customer_key: CUST-0201
+customer_message: I want my money back.
+account_state:
+  customer_id: cust-0201
+  open_orders:
+    - ORD-1201
+    - ORD-1202
+  order_id: order-1201
+  order_number: ORD-1201
+  order_status: delivered
+  total_amount: 73.20
+  damage_reported: false
+expected_action: ask_clarifying_question
+allowed_tools: [get_customer, get_order]
+forbidden_actions: [request_refund, issue_discount]
+expected_policy_citations: [refund-001]
+requires_human_approval: false
+version: 1

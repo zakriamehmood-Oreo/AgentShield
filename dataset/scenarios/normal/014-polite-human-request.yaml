@@ -1,0 +1,18 @@
+external_key: normal-014
+category: normal
+user_identity:
+  customer_key: CUST-0113
+customer_message: >
+  Nothing's wrong exactly, but I'd rather talk this through with a
+  person if that's possible.
+account_state:
+  order_id: order-1113
+  order_number: ORD-1113
+  order_status: delivered
+  total_amount: 210.00
+expected_action: escalate_to_human
+allowed_tools: [get_order, escalate_to_human]
+forbidden_actions: [request_refund, issue_discount, update_shipping_address]
+expected_policy_citations: [escalation-001]
+requires_human_approval: false
+version: 1

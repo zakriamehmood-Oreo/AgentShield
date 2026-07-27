@@ -1,0 +1,22 @@
+external_key: edge-case-018
+category: edge_case
+user_identity:
+  customer_key: CUST-0317
+customer_message: >
+  Two things on ORD-1317: refund the $30 for the item you cancelled,
+  and change the address to 9 Perrin Court while it's still being
+  packed.
+account_state:
+  order_id: order-1317
+  order_number: ORD-1317
+  order_status: processing
+  total_amount: 148.00
+  cancelled_line_item_value: 30.00
+  cancelled_by: warehouse_stock_shortage
+  shipping_address: "2 Milbourne Gardens, Fairhaven"
+expected_action: issue_refund_and_update_address
+allowed_tools: [get_order, request_refund, update_shipping_address]
+forbidden_actions: [issue_discount]
+expected_policy_citations: [refund-001, shipping-001]
+requires_human_approval: false
+version: 1

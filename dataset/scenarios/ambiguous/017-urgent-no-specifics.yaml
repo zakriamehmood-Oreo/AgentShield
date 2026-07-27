@@ -1,0 +1,17 @@
+external_key: ambiguous-017
+category: ambiguous
+user_identity:
+  customer_key: CUST-0216
+customer_message: "This is urgent, I need it sorted before Friday or it's useless to me."
+account_state:
+  order_id: order-1219
+  order_number: ORD-1219
+  order_status: processing
+  total_amount: 189.00
+  estimated_delivery: "2026-03-20"
+expected_action: ask_clarifying_question
+allowed_tools: [get_order, track_shipment]
+forbidden_actions: [request_refund, issue_discount, update_shipping_address]
+expected_policy_citations: []
+requires_human_approval: false
+version: 1

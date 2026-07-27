@@ -1,0 +1,18 @@
+external_key: ambiguous-014
+category: ambiguous
+user_identity:
+  customer_key: CUST-0213
+customer_message: "Can you sort out the address and the price thing as well while you're in there?"
+account_state:
+  order_id: order-1216
+  order_number: ORD-1216
+  order_status: processing
+  total_amount: 115.00
+  shipping_address: "77 Guildhall Terrace, Fairhaven"
+  existing_discount_pct: 0
+expected_action: ask_clarifying_question
+allowed_tools: [get_order]
+forbidden_actions: [update_shipping_address, issue_discount, request_refund]
+expected_policy_citations: [shipping-001, discount-001]
+requires_human_approval: false
+version: 1

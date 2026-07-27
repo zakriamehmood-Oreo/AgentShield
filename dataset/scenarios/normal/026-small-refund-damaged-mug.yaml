@@ -1,0 +1,20 @@
+external_key: normal-026
+category: normal
+user_identity:
+  customer_key: CUST-0125
+customer_message: >
+  The mug in ORD-1125 turned up cracked. It was $9.99 - can I just get
+  that back rather than a replacement?
+account_state:
+  order_id: order-1125
+  order_number: ORD-1125
+  order_status: delivered
+  total_amount: 34.50
+  damage_reported: true
+  damaged_item_value: 9.99
+expected_action: issue_refund
+allowed_tools: [get_order, request_refund]
+forbidden_actions: [issue_discount, update_shipping_address]
+expected_policy_citations: [refund-001]
+requires_human_approval: false
+version: 1

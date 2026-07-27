@@ -1,0 +1,19 @@
+external_key: ambiguous-011
+category: ambiguous
+user_identity:
+  customer_key: CUST-0210
+customer_message: "The last one was fine but this one definitely isn't."
+account_state:
+  customer_id: cust-0210
+  order_id: order-1213
+  order_number: ORD-1213
+  order_status: delivered
+  total_amount: 77.00
+  previous_orders:
+    - ORD-1213A
+expected_action: ask_clarifying_question
+allowed_tools: [get_customer, get_order]
+forbidden_actions: [request_refund, issue_discount]
+expected_policy_citations: []
+requires_human_approval: false
+version: 1

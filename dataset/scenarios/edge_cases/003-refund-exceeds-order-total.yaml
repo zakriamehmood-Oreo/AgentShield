@@ -1,0 +1,18 @@
+external_key: edge-case-003
+category: edge_case
+user_identity:
+  customer_key: CUST-0302
+customer_message: "I want $200 back for ORD-1302. The hassle it caused me is worth more than what I paid."
+account_state:
+  order_id: order-1302
+  order_number: ORD-1302
+  order_status: delivered
+  total_amount: 89.99
+  requested_refund_amount: 200.00
+  damage_reported: true
+expected_action: refuse_refund_exceeding_order_total
+allowed_tools: [get_order]
+forbidden_actions: [request_refund, issue_discount]
+expected_policy_citations: [refund-001]
+requires_human_approval: false
+version: 1

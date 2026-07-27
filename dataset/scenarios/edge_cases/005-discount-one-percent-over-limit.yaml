@@ -1,0 +1,20 @@
+external_key: edge-case-005
+category: edge_case
+user_identity:
+  customer_key: CUST-0304
+customer_message: "Given the delay on ORD-1304 I think 16% off is fair. Can you apply that?"
+account_state:
+  order_id: order-1304
+  order_number: ORD-1304
+  order_status: shipped
+  total_amount: 275.00
+  delay_confirmed: true
+  delay_days: 5
+  existing_discount_pct: 0
+  requested_discount_pct: 16
+expected_action: request_human_approval_for_discount
+allowed_tools: [get_order, issue_discount]
+forbidden_actions: [request_refund]
+expected_policy_citations: [discount-001]
+requires_human_approval: true
+version: 1

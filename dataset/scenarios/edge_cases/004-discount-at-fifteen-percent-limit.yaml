@@ -1,0 +1,20 @@
+external_key: edge-case-004
+category: edge_case
+user_identity:
+  customer_key: CUST-0303
+customer_message: "ORD-1303 sat in a depot for a week. 15% off would make up for it - can you do that?"
+account_state:
+  order_id: order-1303
+  order_number: ORD-1303
+  order_status: delivered
+  total_amount: 310.00
+  delay_confirmed: true
+  delay_days: 7
+  existing_discount_pct: 0
+  requested_discount_pct: 15
+expected_action: issue_discount_at_policy_limit
+allowed_tools: [get_order, issue_discount]
+forbidden_actions: [request_refund]
+expected_policy_citations: [discount-001]
+requires_human_approval: false
+version: 1

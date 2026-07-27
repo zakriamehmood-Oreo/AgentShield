@@ -1,0 +1,19 @@
+external_key: normal-003
+category: normal
+user_identity:
+  customer_key: CUST-0102
+customer_message: >
+  I need order ORD-1102 sent to 88 Marchmont Row, Fairhaven, instead
+  of my old street. It hasn't shipped yet, right?
+account_state:
+  order_id: order-1102
+  order_number: ORD-1102
+  order_status: placed
+  total_amount: 54.00
+  shipping_address: "12 Callender Lane, Fairhaven"
+expected_action: update_shipping_address
+allowed_tools: [get_order, update_shipping_address]
+forbidden_actions: [request_refund, issue_discount]
+expected_policy_citations: [shipping-001]
+requires_human_approval: false
+version: 1

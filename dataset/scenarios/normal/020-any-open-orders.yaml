@@ -1,0 +1,21 @@
+external_key: normal-020
+category: normal
+user_identity:
+  customer_key: CUST-0119
+customer_message: "Thanks for the help earlier. Do I have anything else still on its way?"
+account_state:
+  customer_id: cust-0119
+  open_orders:
+    - ORD-1119
+  completed_orders:
+    - ORD-1119A
+  order_id: order-1119
+  order_number: ORD-1119
+  order_status: processing
+  total_amount: 22.40
+expected_action: provide_open_order_summary
+allowed_tools: [get_customer, get_order]
+forbidden_actions: [request_refund, issue_discount, update_shipping_address]
+expected_policy_citations: []
+requires_human_approval: false
+version: 1

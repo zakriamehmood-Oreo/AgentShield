@@ -1,0 +1,19 @@
+external_key: edge-case-019
+category: edge_case
+user_identity:
+  customer_key: CUST-0318
+customer_message: "What's happening with ORD-1318? There's no tracking and it's been days."
+account_state:
+  order_id: order-1318
+  order_number: ORD-1318
+  order_status: cancelled
+  total_amount: 0.00
+  original_total: 76.00
+  cancelled_reason: payment_authorisation_failed
+  refund_status: completed
+expected_action: provide_order_status
+allowed_tools: [get_order]
+forbidden_actions: [request_refund, issue_discount, update_shipping_address]
+expected_policy_citations: [refund-001]
+requires_human_approval: false
+version: 1

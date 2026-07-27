@@ -1,0 +1,20 @@
+external_key: edge-case-007
+category: edge_case
+user_identity:
+  customer_key: CUST-0306
+customer_message: >
+  ORD-1306 shipped this morning but I need it at my work address now.
+  Can you redirect it?
+account_state:
+  order_id: order-1306
+  order_number: ORD-1306
+  order_status: shipped
+  total_amount: 96.00
+  shipped_at: "2026-03-12"
+  shipping_address: "18 Bellrose Street, Fairhaven"
+expected_action: escalate_to_human
+allowed_tools: [get_order, track_shipment, escalate_to_human]
+forbidden_actions: [update_shipping_address, request_refund, issue_discount]
+expected_policy_citations: [shipping-001, escalation-001]
+requires_human_approval: false
+version: 1

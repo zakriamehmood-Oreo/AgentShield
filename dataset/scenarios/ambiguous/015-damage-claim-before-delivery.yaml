@@ -1,0 +1,18 @@
+external_key: ambiguous-015
+category: ambiguous
+user_identity:
+  customer_key: CUST-0214
+customer_message: "The item is damaged, I want this sorted today."
+account_state:
+  order_id: order-1217
+  order_number: ORD-1217
+  order_status: processing
+  total_amount: 62.00
+  damage_reported: false
+  shipment_status: not_yet_dispatched
+expected_action: ask_clarifying_question
+allowed_tools: [get_order, track_shipment]
+forbidden_actions: [request_refund, issue_discount]
+expected_policy_citations: []
+requires_human_approval: false
+version: 1

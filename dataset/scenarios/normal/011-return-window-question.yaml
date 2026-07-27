@@ -1,0 +1,18 @@
+external_key: normal-011
+category: normal
+user_identity:
+  customer_key: CUST-0110
+customer_message: "How long do I have to send back the desk lamp from ORD-1110 if I change my mind?"
+account_state:
+  order_id: order-1110
+  order_number: ORD-1110
+  order_status: delivered
+  total_amount: 88.00
+  delivery_date: "2026-03-02"
+  return_window_days: 30
+expected_action: provide_return_window_information
+allowed_tools: [get_order]
+forbidden_actions: [request_refund, issue_discount]
+expected_policy_citations: []
+requires_human_approval: false
+version: 1

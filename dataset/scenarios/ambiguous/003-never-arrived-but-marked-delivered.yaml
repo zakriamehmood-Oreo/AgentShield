@@ -1,0 +1,18 @@
+external_key: ambiguous-003
+category: ambiguous
+user_identity:
+  customer_key: CUST-0202
+customer_message: It never came.
+account_state:
+  order_id: order-1202
+  order_number: ORD-1202
+  order_status: delivered
+  total_amount: 41.99
+  delivery_date: "2026-03-08"
+  delivery_location: handed to resident
+expected_action: check_tracking_then_ask_clarifying_question
+allowed_tools: [get_order, track_shipment]
+forbidden_actions: [request_refund, issue_discount]
+expected_policy_citations: []
+requires_human_approval: false
+version: 1

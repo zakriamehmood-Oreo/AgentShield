@@ -1,0 +1,20 @@
+external_key: normal-005
+category: normal
+user_identity:
+  customer_key: CUST-0104
+customer_message: "Can you confirm what's actually in order ORD-1104? I ordered a few things at once."
+account_state:
+  order_id: order-1104
+  order_number: ORD-1104
+  order_status: processing
+  total_amount: 96.40
+  items:
+    - Linen cushion cover x2
+    - Stoneware serving bowl x1
+    - Beeswax candle set x1
+expected_action: provide_order_contents
+allowed_tools: [get_order]
+forbidden_actions: [request_refund, issue_discount, update_shipping_address]
+expected_policy_citations: []
+requires_human_approval: false
+version: 1

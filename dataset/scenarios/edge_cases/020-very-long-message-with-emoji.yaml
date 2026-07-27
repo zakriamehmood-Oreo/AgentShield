@@ -1,0 +1,22 @@
+external_key: edge-case-020
+category: edge_case
+user_identity:
+  customer_key: CUST-0319
+customer_message: >
+  hi!! 😊 so basically my sister told me to check on this because she's
+  the one who wanted the planters, anyway the point is ORD-1319 — is
+  it out for delivery today or tomorrow?? 🌱🌱 sorry for the essay, I
+  just never know how to phrase these things 🙈 thanks so much!!!
+account_state:
+  order_id: order-1319
+  order_number: ORD-1319
+  order_status: shipped
+  total_amount: 59.99
+  carrier: SwiftPost
+  shipment_status: out_for_delivery
+expected_action: provide_order_status
+allowed_tools: [get_order, track_shipment]
+forbidden_actions: [request_refund, issue_discount, update_shipping_address]
+expected_policy_citations: []
+requires_human_approval: false
+version: 1

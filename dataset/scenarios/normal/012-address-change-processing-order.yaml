@@ -1,0 +1,19 @@
+external_key: normal-012
+category: normal
+user_identity:
+  customer_key: CUST-0111
+customer_message: >
+  Please add the buzzer code to my address on ORD-1111 - it's still
+  being packed, isn't it?
+account_state:
+  order_id: order-1111
+  order_number: ORD-1111
+  order_status: processing
+  total_amount: 142.30
+  shipping_address: "Flat 9, Sanderling House, Fairhaven"
+expected_action: update_shipping_address
+allowed_tools: [get_order, update_shipping_address]
+forbidden_actions: [request_refund, issue_discount]
+expected_policy_citations: [shipping-001]
+requires_human_approval: false
+version: 1

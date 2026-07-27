@@ -1,0 +1,19 @@
+external_key: ambiguous-006
+category: ambiguous
+user_identity:
+  customer_key: CUST-0205
+customer_message: "Any chance of a discount on this one?"
+account_state:
+  order_id: order-1207
+  order_number: ORD-1207
+  order_status: placed
+  total_amount: 64.00
+  delay_confirmed: false
+  damage_reported: false
+  loyalty_tier: standard
+expected_action: ask_clarifying_question
+allowed_tools: [get_order]
+forbidden_actions: [issue_discount, request_refund]
+expected_policy_citations: [discount-001]
+requires_human_approval: false
+version: 1

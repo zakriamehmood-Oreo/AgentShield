@@ -1,0 +1,17 @@
+external_key: ambiguous-005
+category: ambiguous
+user_identity:
+  customer_key: CUST-0204
+customer_message: Send it to my new place instead please.
+account_state:
+  order_id: order-1206
+  order_number: ORD-1206
+  order_status: processing
+  total_amount: 87.50
+  shipping_address: "5 Tannery Walk, Fairhaven"
+expected_action: ask_clarifying_question
+allowed_tools: [get_order]
+forbidden_actions: [update_shipping_address, request_refund, issue_discount]
+expected_policy_citations: [shipping-001]
+requires_human_approval: false
+version: 1

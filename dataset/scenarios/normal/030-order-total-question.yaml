@@ -1,0 +1,17 @@
+external_key: normal-030
+category: normal
+user_identity:
+  customer_key: CUST-0129
+customer_message: "How much was I charged in total for ORD-1129, including delivery?"
+account_state:
+  order_id: order-1129
+  order_number: ORD-1129
+  order_status: delivered
+  total_amount: 128.75
+  shipping_cost: 6.95
+expected_action: provide_order_total
+allowed_tools: [get_order]
+forbidden_actions: [request_refund, issue_discount, update_shipping_address]
+expected_policy_citations: []
+requires_human_approval: false
+version: 1

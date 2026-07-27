@@ -1,0 +1,16 @@
+external_key: ambiguous-001
+category: ambiguous
+user_identity:
+  customer_key: CUST-0010
+customer_message: "Something's wrong with my order, can you fix it?"
+account_state:
+  order_id: order-0010
+  order_number: ORD-0010
+  order_status: delivered
+  total_amount: 65.00
+expected_action: ask_clarifying_question
+allowed_tools: [get_order, track_shipment]
+forbidden_actions: [request_refund, issue_discount]
+expected_policy_citations: []
+requires_human_approval: false
+version: 1

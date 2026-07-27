@@ -1,0 +1,19 @@
+external_key: normal-008
+category: normal
+user_identity:
+  customer_key: CUST-0107
+customer_message: "Which courier is delivering ORD-1107? I want to leave delivery instructions with them."
+account_state:
+  order_id: order-1107
+  order_number: ORD-1107
+  order_status: shipped
+  total_amount: 45.00
+  carrier: Kestrel Courier
+  tracking_number: KC-88120445
+  shipment_status: out_for_delivery
+expected_action: provide_carrier_details
+allowed_tools: [get_order, track_shipment]
+forbidden_actions: [request_refund, issue_discount, update_shipping_address]
+expected_policy_citations: []
+requires_human_approval: false
+version: 1

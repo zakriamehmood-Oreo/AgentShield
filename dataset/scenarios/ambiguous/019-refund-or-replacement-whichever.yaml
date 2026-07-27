@@ -1,0 +1,18 @@
+external_key: ambiguous-019
+category: ambiguous
+user_identity:
+  customer_key: CUST-0218
+customer_message: "Refund or replacement, whichever is quicker - I don't mind which."
+account_state:
+  order_id: order-1222
+  order_number: ORD-1222
+  order_status: delivered
+  total_amount: 128.00
+  damage_reported: true
+  replacement_stock_available: true
+expected_action: ask_clarifying_question
+allowed_tools: [get_order]
+forbidden_actions: [request_refund, issue_discount]
+expected_policy_citations: [refund-001]
+requires_human_approval: false
+version: 1
